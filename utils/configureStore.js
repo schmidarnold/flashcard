@@ -9,16 +9,40 @@ const middleWare = applyMiddleware(
 
   thunk,
 );
-const persistedState = loadState();
+export const initStore = () => loadState().then(data=>{
 
-export const store = createStore(
-  reducer,
-  persistedState,
-  composeEnhancers(middleWare)
-)
-store.subscribe(()=> {
-  saveState(store.getState())
-})
+  console.log("init Store, load data")
+  if(data && data.length){
+    console.log("init Store, load existing data")
+   const store = createStore(
+    reducer,
+    persistedState,
+    composeEnhancers(middleWare)
+  )}else{
+    const store = createStore(
+      reducer,
+      composeEnhancers(middleWare)
+
+    )
+    //if i pass back the store here, everything is ok, why
+    //the commands outside the if will not be executed
+    console.log("redux Store else")
+  }
+  console.log("redux Store: " + JSON.stringify(store.getState()))
+  return {store}
+  const saveStorageHandler = () => {
+    console.log("handling save store")
+    saveState(store.getState())
+  }
+  store.subscribe(saveStorageHandler)
+console.log("returning data")
+return {store}
+}
+
+
+);
+
+
 
 // export default function configureStore(){
 //   return createStore(

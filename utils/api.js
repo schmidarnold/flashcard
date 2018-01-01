@@ -3,14 +3,18 @@ import { AsyncStorage } from 'react-native';
 
 export const loadState = () => {
   try {
-    const serializedState = AsyncStorage.getItem(APP_STORAGE_KEY);
-    const parsedData = JSON.parse(serializedState)
-    console.log("load state from asyncStorage: ")
-    if (serializedState === null) {
-      return undefined;
-    }
-
-    return JSON.parse(serializedState);
+    const parsedData = AsyncStorage.getItem(APP_STORAGE_KEY).then(
+      (result)=>JSON.parse(result)
+    )
+    return parsedData
+    // const serializedState = AsyncStorage.getItem(APP_STORAGE_KEY);
+    // const parsedData = JSON.parse(serializedState)
+    // console.log("load state from asyncStorage: ")
+    // if (serializedState === null) {
+    //   return undefined;
+    // }
+    //
+    // return JSON.parse(serializedState);
 
   } catch (err) {
     return undefined;

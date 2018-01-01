@@ -7,7 +7,7 @@ import {TabNavigator, StackNavigator} from 'react-navigation'
 import DeckListView from './components/DeckListView'
 import AddDeck from './components/AddDeck'
 import {purple, white} from './utils/colors'
-import {store} from './utils/configureStore'
+import {initStore} from './utils/configureStore'
 
 function DecksStatusBar ({backgroundColor, ...props}){
   return(
@@ -58,12 +58,39 @@ const MainNavigator = StackNavigator({
 
 })
 export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+
+    };
+    this.store = null;
+
+  }
   componentDidMount(){
 
   }
+ async componentWillMount() {
+    try{
+      console.log("init store")
+      const {store} = await initStore()
+        this.store = store
+        console.log("init Store in App.js")
+        this.setState({isLoading:false})
+
+    }catch(e){
+
+    }
+  }
   render() {
+    const {isLoading} = this.state
+    const store = this.store
     return (
-      <Provider store={store}>
+      isLoading
+      ?<View>
+        <Text>Data loading</Text>
+      </View>
+      :<Provider store={store}>
         <View style={{flex:1}}>
           <DecksStatusBar backgroundColor={purple} barStyle='light-content' />
           <MainNavigator/>
