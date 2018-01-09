@@ -1,51 +1,69 @@
 import React, {Component} from 'react'
-import {View, Text,FlatList,StyleSheet} from 'react-native'
+import {View, Text,FlatList,StyleSheet, TouchableOpacity} from 'react-native'
 import {connect} from 'react-redux'
-import {getDecks} from '../actions'
+import {getDecks,deleteDeck} from '../actions'
 import { List, ListItem } from 'react-native-elements';
-
-
+import {AppLoading} from 'expo'
+import DeckListItem from './DeckListItem'
+import {StackNavigator} from 'react-navigation'
 
 class DeckListView extends Component {
   state={
     ready: false
   }
   componentDidMount(){
-    console.log("component did mount DeckListView")
+
     this.props.getDecks()
+    //console.log("componentDidMOunt: " + this.props.getDecks)
+    this.setState({ready:true})
   }
 
-
-
+  goToDeck=(item)=>{
+    this.props.navigation.navigate('Deck', {item})
+  }
+  deleteDeck=(item)=>{
+    //console.log ("Deleting " + item.title)
+    this.props.deleteCurDeck(item.title)
+  }
   render(){
     const {cardArray} = this.props
+
+    if (!this.state.ready){
+      return <AppLoading />
+    }
     return(
 
       <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }} >
 
         <FlatList
           snapToAlignment={'center'}
+
           data={cardArray}
           renderItem={({ item }) => (
 
-            <ListItem
 
-              title={`${item.title} `}
-              subtitle={`${item.questions.length} cards`}
 
-            />
+                <TouchableOpacity onPress={() => this.goToDeck(item)}>
+                  <DeckListItem curItem={item} onDeleteItem={this.deleteDeck}/>
+
+                </TouchableOpacity>
+
+
+
+
 
           )}
           keyExtractor={item => item.title}
         />
 
       </List>
+
     )
   }
 
 }
 
-function mapStateToProps (decks) {
+function mapStateToProps ({decks}) {
   let cardArray = Object.keys(decks).map(key => decks[key]);
   console.log(JSON.stringify(decks))
   console.log (JSON.stringify(cardArray))
@@ -55,6 +73,7 @@ function mapStateToProps (decks) {
 }
 const mapDispatchToProps = (dispatch) => ({
   getDecks: () => dispatch(getDecks()),
+  deleteCurDeck:(key) => dispatch(deleteDeck(key))
 })
 var styles = StyleSheet.create({
    listView: {

@@ -1,13 +1,19 @@
 import React from 'react';
-import { StyleSheet, Text, View, Platform, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Platform, StatusBar, AsyncStorage } from 'react-native';
 import {Provider} from 'react-redux'
 import {Constants} from 'expo'
 import {FontAwesome, Entypo} from '@expo/vector-icons'
 import {TabNavigator, StackNavigator} from 'react-navigation'
 import DeckListView from './components/DeckListView'
 import AddDeck from './components/AddDeck'
+import AddCard from './components/AddCard'
+import Deck from './components/Deck'
+import Quiz from './components/Quiz'
 import {purple, white} from './utils/colors'
-import {initStore} from './utils/configureStore'
+import configureStore from './utils/configureStore'
+import {persistStore} from 'redux-persist'
+import {Font, AppLoading} from 'expo'
+import { PersistGate } from 'redux-persist/lib/integration/react'
 
 function DecksStatusBar ({backgroundColor, ...props}){
   return(
@@ -55,48 +61,54 @@ const MainNavigator = StackNavigator({
   Home: {
     screen: Tabs,
   },
-
+  Deck: {
+    screen: Deck,
+  },
+  AddCard: {
+    screen:AddCard,
+  },
+  Quiz: {
+    screen:Quiz,
+  }
 })
+const{persistor, store} = configureStore()
 export default class App extends React.Component {
   constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: true,
+      super(props);
+      this.state = { loading: true };
+    }
+    async componentWillMount() {
+      await Font.loadAsync({
+        Roboto: require("native-base/Fonts/Roboto.ttf"),
+        Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
+      });
+      this.setState({ loading: false });
+    }
 
-    };
-    this.store = null;
 
-  }
   componentDidMount(){
 
   }
- async componentWillMount() {
-    try{
-      console.log("init store")
-      const {store} = await initStore()
-        this.store = store
-        console.log("init Store in App.js")
-        this.setState({isLoading:false})
 
-    }catch(e){
-
-    }
-  }
   render() {
-    const {isLoading} = this.state
-    const store = this.store
+    if (this.state.loading) {
+      return (
+
+          <AppLoading />
+
+      );
+    }
+
+
     return (
-      isLoading
-      ?<View>
-        <Text>Data loading</Text>
-      </View>
-      :<Provider store={store}>
+    <PersistGate persistor={persistor}>
+    <Provider store={store}>
         <View style={{flex:1}}>
           <DecksStatusBar backgroundColor={purple} barStyle='light-content' />
           <MainNavigator/>
         </View>
     </Provider>
-
+    </PersistGate>
     );
   }
 }

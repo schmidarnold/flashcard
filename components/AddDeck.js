@@ -26,6 +26,7 @@ class AddDeck extends Component{
     const key = this.state.deckTitle
     //console.log(newDeck)
     this.props.addDeck(newDeck,key)
+    this.setState({deckTitle:""})
   }
 
   render(){

@@ -1,18 +1,35 @@
-import {GET_DECKS, GET_DECK, ADD_QUESTION,ADD_DECK} from '../actions'
+import {GET_DECKS, GET_DECK, ADD_QUESTION,ADD_DECK,DELETE_DECK} from '../actions'
 
-function decks(state=defaultState, action){
+const decks = (state=defaultState, action)=> {
   switch(action.type){
     case GET_DECKS:
-      console.log("reducer: get_decks")
+      console.log("reducer: get_decks" )
       return {
         ...state
-        
+
       }
     case ADD_DECK:
       return {
         ...state,
       [action.key]:action.deck
       }
+    case ADD_QUESTION:
+     const{key,question,answer} = action.payload
+     return {
+       ...state,
+       [key]:{
+         title:key,
+         questions:[
+           ...state[`${key}`].questions,
+           {question,answer}
+         ]
+       }
+     }
+     case DELETE_DECK:
+        delete state[action.key]
+        return{
+          ...state
+        }
     default:
      return state
   }
@@ -42,4 +59,6 @@ const defaultState= {
     ]
   }
 }
-export default decks
+export default {
+  decks
+}
