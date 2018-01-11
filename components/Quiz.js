@@ -5,6 +5,7 @@ import { Button} from 'native-base'
 import FlipCard from 'react-native-flip-card'
 import QuizCard from './QuizCard'
 
+
 const QuizResult = ({result, onPressRetry, onPressHome})=>(
   <View style={{flex:1}}>
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -86,7 +87,7 @@ class Quiz extends Component{
           onPressRetry={this.retry}
           onPressHome={this.goHome}
         />
-        : <QuizCard
+      : <QuizCard
           questions={questions}
           index={index}
           onShowAnswer={this.showAnswer}

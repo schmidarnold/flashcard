@@ -14,6 +14,7 @@ import configureStore from './utils/configureStore'
 import {persistStore} from 'redux-persist'
 import {Font, AppLoading} from 'expo'
 import { PersistGate } from 'redux-persist/lib/integration/react'
+import { setLocalNotification } from './utils/helpers'
 
 function DecksStatusBar ({backgroundColor, ...props}){
   return(
@@ -87,6 +88,8 @@ export default class App extends React.Component {
 
 
   componentDidMount(){
+
+      setLocalNotification()
 
   }
 
