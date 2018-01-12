@@ -27,6 +27,8 @@ class AddDeck extends Component{
     //console.log(newDeck)
     this.props.addDeck(newDeck,key)
     this.setState({deckTitle:""})
+    let item = newDeck
+    this.props.navigation.navigate('Deck', {item})
   }
 
   render(){

@@ -28,9 +28,11 @@ class AddCard extends Component{
       question: '',
       answer: '',
       })
+      this.props.navigation.goBack()
     }else{
       return Alert.alert('Invalid Question', 'Question and Answer must not be empty');
     }
+    
   }
   render(){
     const {deck} = this.props.navigation.state.params

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import {StyleSheet, View,Text,Dimensions,TouchableOpacity } from 'react-native';
+import {StyleSheet, View,Text,Dimensions,TouchableOpacity,Platform } from 'react-native';
 import {gray,lightPurp,white,blue,purple} from '../utils/colors'
 import { Button} from 'native-base'
 import FlipCard from 'react-native-flip-card'
 import QuizCard from './QuizCard'
+import QuizCardAndroid from './QuizCardAndroid'
 
 
 const QuizResult = ({result, onPressRetry, onPressHome})=>(
@@ -79,6 +80,24 @@ class Quiz extends Component{
     const {index,score} = this.state
     const finished = index===questions.length
     const result = Math.round(score / questions.length * 10000) / 100;
+    let card=null
+    if (Platform.OS ==='ios') {
+      card=<QuizCard
+          questions={questions}
+          index={index}
+          onShowAnswer={this.showAnswer}
+          onGoNext={this.goToNext}
+          flipped={this.state.flipped}
+          />
+    }else{
+      card =<QuizCardAndroid
+          questions={questions}
+          index={index}
+          onShowAnswer={this.showAnswer}
+          onGoNext={this.goToNext}
+          flipped={this.state.flipped}
+          />
+    }
     return(
       <View style={styles.container}>
         {finished
@@ -87,13 +106,7 @@ class Quiz extends Component{
           onPressRetry={this.retry}
           onPressHome={this.goHome}
         />
-      : <QuizCard
-          questions={questions}
-          index={index}
-          onShowAnswer={this.showAnswer}
-          onGoNext={this.goToNext}
-          flipped={this.state.flipped}
-          />
+      : card
 
       }
       </View>
